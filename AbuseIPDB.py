@@ -6,6 +6,7 @@ import sys
 import requests
 import ipaddress
 import socket
+import time
 from sys import argv
 
 api_key = 'YOUR_API_KEY_HERE'
@@ -87,6 +88,7 @@ def main():
         list(set(found))
 
         print("Abuse IP Database REPORT:")
+        count = 0
         for ip in found:
             try:
                 socket.inet_aton(ip)
@@ -94,7 +96,11 @@ def main():
                 continue
 
             if ipaddress.ip_address(ip).is_private is False:
+                if count == 59:
+                    time.sleep(60)
+                    count = 0
                 get_report(ip)
+                count += 1
 
 
 if __name__ == '__main__':

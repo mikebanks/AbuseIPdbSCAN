@@ -59,8 +59,10 @@ def get_report(IP):
                 # log.append(iso_code)
                 log.append(created)
                 for cat in category:
-                    log.append(get_cat(cat))
-                print('\t'.join(map(str, log)))
+                    temp_cat = get_cat(cat)
+                    log.append(temp_cat)
+                    print('\t'.join(map(str, log)))
+                    log.remove(temp_cat)
     except (ValueError, KeyError, TypeError):
         print("JSON format error")
 

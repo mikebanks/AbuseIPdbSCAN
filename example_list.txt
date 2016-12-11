@@ -1,0 +1,3 @@
+This is how this script can pull out an IP like this 1.2.3.4
+5.6.7.8 is another example
+8.8.8.8 has a surprising REPORT in store

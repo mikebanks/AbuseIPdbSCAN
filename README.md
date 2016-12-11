@@ -14,7 +14,7 @@ pip3 install Requests
 pip3 install requests[security]
 ```
 - AbuseIP DB API Key
-In order to use the script you will need an API key and place it in the scrip under the "api_key" variable
+In order to use the script you will need an API key and place it in the scrip under the "api_key" variable. API key information can be found here: (https://www.abuseipdb.com/api.html)
 
 ## Usage
 ==================

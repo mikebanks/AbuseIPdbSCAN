@@ -4,6 +4,8 @@ import argparse
 import re
 import sys
 import requests
+import ipaddress
+import socket
 from sys import argv
 
 api_key = 'YOUR_API_KEY_HERE'
@@ -86,7 +88,13 @@ def main():
 
         print("Abuse IP Database REPORT:")
         for ip in found:
-            get_report(ip)
+            try:
+                socket.inet_aton(ip)
+            except socket.error:
+                continue
+
+            if ipaddress.ip_address(ip).is_private is False:
+                get_report(ip)
 
 
 if __name__ == '__main__':

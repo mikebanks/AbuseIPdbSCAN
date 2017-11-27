@@ -61,10 +61,25 @@ def get_report(IP):
                 for cat in category:
                     temp_cat = get_cat(cat)
                     log.append(temp_cat)
-                    print('\t'.join(map(str, log)))
+                    print('\t'.join(log))
                     log.remove(temp_cat)
     except (ValueError, KeyError, TypeError):
-        print("JSON format error")
+        #log = []
+        ip_address = ("Alert for %s:" % IP)
+        # ip_address = record['ip']
+        country = data['country']
+        # iso_code = record['isoCode']
+        category = data['category']
+        created = data['created']
+        log.append(ip_address)
+        log.append(country)
+        # log.append(iso_code)
+        log.append(created)
+        for cat in category:
+            temp_cat = get_cat(cat)
+            log.append(temp_cat)
+            print('\t'.join(log))
+            log.remove(temp_cat)
 
 
 def main():

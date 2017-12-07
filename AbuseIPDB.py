@@ -21,10 +21,13 @@ def get_cat(x):
     return {
         3: 'Frad_Orders',
         4: 'DDoS_Attack',
+        5: 'FTP_Brute-Force'
         9: 'Open_Proxy',
         10: 'Web_Spam',
         11: 'Email_Spam',
+        12: 'Blog_Spam'
         14: 'Port_Scan',
+        15: 'Hacking',
         18: 'Brute_Force',
         19: 'Bad_Web_Bot',
         20: 'Exploited_Host',

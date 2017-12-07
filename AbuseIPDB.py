@@ -31,7 +31,9 @@ def get_cat(x):
         21: 'Web_App_Attack',
         22: 'SSH',
         23: 'IoT_Targeted',
-    }.get(x)
+    }.get(
+        x,
+        'UNK CAT, ***REPORT TO MAINTAINER***OPEN AN ISSUE ON GITHUB w/ IP***')
 
 
 def get_report(IP):

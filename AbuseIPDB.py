@@ -12,14 +12,19 @@ from sys import argv
 api_key = 'YOUR_API_KEY_HERE'
 
 parser = argparse.ArgumentParser(
-    description='This program utilizes the Abuse IP Database from: AbuseIPDB.com'
+    description='This program utilizes the Abuse IP Database from: AbuseIPDB.com to perform queries about IP addresses and returns the output to standard out.'
 )
-parser.add_argument(
+required = parser.add_argument_group('required arguments')
+required.add_argument(
     "-f",
     "--file",
     help="parses IP Addresses from a single given file",
     action="store",
     required=True)
+
+
+parser.add_argument("-t", "--tsv", help="outputs items in tab seperated values (Default)", action="store_true")
+parser.add_argument("-c", "--csv", help="outputs items in comma seperated values",  action="store_true")
 
 args = parser.parse_args()
 
@@ -83,7 +88,10 @@ def get_report(IP):
                 for cat in category:
                     temp_cat = get_cat(cat)
                     log.append(temp_cat)
-                    print('\t'.join(log))
+                    if args.csv:
+                       print(','.join(log))
+                    else: 
+                        print('\t'.join(log))
                     log.remove(temp_cat)
     except (ValueError, KeyError, TypeError):
         #log = []
@@ -100,7 +108,10 @@ def get_report(IP):
         for cat in category:
             temp_cat = get_cat(cat)
             log.append(temp_cat)
-            print('\t'.join(log))
+            if args.csv:
+                print(','.join(log))
+            else: 
+                print('\t'.join(log))
             log.remove(temp_cat)
 
 

@@ -11,6 +11,17 @@ from sys import argv
 
 api_key = 'YOUR_API_KEY_HERE'
 
+parser = argparse.ArgumentParser(
+    description='This program utilizes the Abuse IP Database from: AbuseIPDB.com'
+)
+parser.add_argument(
+    "-f",
+    "--file",
+    help="parses IP Addresses from a single given file",
+    action="store",
+    required=True)
+
+args = parser.parse_args()
 
 def get_file(infile):
     with codecs.open(infile, "r", encoding='utf-8', errors='ignore') as f:
@@ -22,12 +33,18 @@ def get_cat(x):
         3: 'Frad_Orders',
         4: 'DDoS_Attack',
         5: 'FTP_Brute-Force',
+        6: 'Ping of Death',
+        7: 'Phishing',
+        8: 'Fraud VoIP',
         9: 'Open_Proxy',
         10: 'Web_Spam',
         11: 'Email_Spam',
         12: 'Blog_Spam',
+        13: 'VPN IP',
         14: 'Port_Scan',
         15: 'Hacking',
+        16: 'SQL Injection',
+        17: 'Spoofing',
         18: 'Brute_Force',
         19: 'Bad_Web_Bot',
         20: 'Exploited_Host',
@@ -88,20 +105,6 @@ def get_report(IP):
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='This program utilizes the Abuse IP Database from: AbuseIPDB.com'
-    )
-    parser.add_argument(
-        "-f",
-        "--file",
-        help="parses IP Addresses from a single given file",
-        action="store")
-
-    args = parser.parse_args()
-
-    if len(sys.argv) < 2:
-        parser.print_help()
-
     if args.file:
         f = get_file(argv[2])
         found = re.findall(

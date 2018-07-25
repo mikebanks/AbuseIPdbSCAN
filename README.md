@@ -29,6 +29,8 @@ python3 AbuseIPDB.py -f file_to_parse.txt
 -t      outputs items in tab seperated values (Default)
 
 -c      outputs items in comma seperated values
+
+-d 		take in the number of days in history to go back for IP reports. Default: 30 Days
 ```
 
 ## Troubleshooting

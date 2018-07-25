@@ -25,6 +25,7 @@ required.add_argument(
 
 parser.add_argument("-t", "--tsv", help="outputs items in tab seperated values (Default)", action="store_true")
 parser.add_argument("-c", "--csv", help="outputs items in comma seperated values",  action="store_true")
+parser.add_argument("-d", "--days", help="take in the number of days in history to go back for IP reports. Default: 30 Days", type=int)
 
 args = parser.parse_args()
 
@@ -61,8 +62,8 @@ def get_cat(x):
         'UNK CAT, ***REPORT TO MAINTAINER***OPEN AN ISSUE ON GITHUB w/ IP***')
 
 
-def get_report(IP):
-    request = 'https://www.abuseipdb.com/check/%s/json?key=%s' % (IP, api_key)
+def get_report(IP,days):
+    request = 'https://www.abuseipdb.com/check/%s/json?key=%s&days=%s' % (IP, api_key, days)
     # DEBUG
     # print(request)
     r = requests.get(request)
@@ -74,6 +75,10 @@ def get_report(IP):
             print("%s:  No Abuse Reports" % IP)
         else:
             for record in data:
+                if 'exceeded' in str(record):
+                   print("%s\nSUGGESTION: Are you using your API KEY?" % record)
+                   sys.exit()
+
                 log = []
                 ip_address = ("Alert for %s:" % IP)
                 # ip_address = record['ip']
@@ -94,6 +99,9 @@ def get_report(IP):
                         print('\t'.join(log))
                     log.remove(temp_cat)
     except (ValueError, KeyError, TypeError):
+        if 'exceeded' in str(record):
+            print("%s\nSUGGESTION: Are you using your API KEY?")
+            sys.exit()
         #log = []
         ip_address = ("Alert for %s:" % IP)
         # ip_address = record['ip']
@@ -117,7 +125,12 @@ def get_report(IP):
 
 def main():
     if args.file:
-        f = get_file(argv[2])
+        if args.days:
+            days = args.days
+        else:
+            days = 30
+
+        f = get_file(args.file)
         found = re.findall(
             r'(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})', f)
 
@@ -135,7 +148,7 @@ def main():
                 if count == 59:
                     time.sleep(60)
                     count = 0
-                get_report(ip)
+                get_report(ip,days)
                 count += 1
 
 

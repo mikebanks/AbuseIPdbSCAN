@@ -4,33 +4,37 @@ This is a python script that will parse IP addresses from files and interact wit
 
 ## Requirements (Setup)
 
-
 - Python3 (2.7 may have errors)
 - Requests
-```
+
+``` BASH
 pip3 install Requests
 ```
+
 - Requests[security]
-```
+
+``` BASH
 pip3 install requests[security]
 ```
+
 - AbuseIP DB API Key
+
 In order to use the script you will need an API key and place it in the scrip under the "api_key" variable. API key information can be found here: (https://www.abuseipdb.com/api.html)
 
 ## Usage
 
-```
+``` BASH
 python3 AbuseIPDB.py -f file_to_parse.txt
 ```
 
  The options are as follows:
 
-```
+``` BASH
 -t      outputs items in tab seperated values (Default)
 
 -c      outputs items in comma seperated values
 
--d 		take in the number of days in history to go back for IP reports. Default: 30 Days
+-d      take in the number of days in history to go back for IP reports. Default: 30 Days
 ```
 
 ## Troubleshooting

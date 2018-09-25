@@ -8,13 +8,7 @@ This is a python script that will parse IP addresses from files and interact wit
 - Requests
 
 ``` BASH
-pip3 install Requests
-```
-
-- Requests[security]
-
-``` BASH
-pip3 install requests[security]
+pip3 install -r requirements.txt
 ```
 
 - AbuseIP DB API Key
@@ -30,11 +24,15 @@ python3 AbuseIPDB.py -f file_to_parse.txt
  The options are as follows:
 
 ``` BASH
--t      outputs items in tab seperated values (Default)
-
--c      outputs items in comma seperated values
-
--d      take in the number of days in history to go back for IP reports. Default: 30 Days
+  -f FILE, --file FILE  	parses IP Addresses from a single given file
+  -i IP, --ip IP        	Takes a single IP Addresse
+  -c CSV, --csv CSV     	outputs items in comma seperated values
+  -j JSON, --json JSON  	outputs items in jsonl format
+  -l JSONL, --jsonl JSONL	outputs items in jsonl format
+  -t TSV, --tsv TSV     	outputs items in tab seperated values (Default)
+  -d DAYS, --days DAYS  	take in the number of days in history to go back for IP reports. Default: 30 Days
+  -x, --translate       By default categories are numbers, with this flag it will convert them to text
+  -v, --version			Displays version information
 ```
 
 ## Troubleshooting
@@ -46,9 +44,10 @@ python3 AbuseIPDB.py -f file_to_parse.txt
 ## Backlog
 
 - Parse for IPs recursively through directories
-- Create an option to output data in JSON
-- Create an option to output data to a file
 
 ## Completed (After Launch)
 
-- ~~Create an option to output data in TSV or CSV~~
+- ~~Create an option to output data in TSV~~
+- ~~Create an option to output data in CSV~~
+- ~~Create an option to output data in JSON~~
+- ~~Create an option to output data to a file~~

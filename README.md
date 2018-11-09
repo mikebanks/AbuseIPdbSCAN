@@ -39,7 +39,7 @@ python3 AbuseIPDB.py -f file_to_parse.txt
 
 - If you are receiving errors, please look at the Issues queue and see if there is already an issue open.
 
-- If you have a unique issue, please create a new Issue, and include the output of your terminal from the bootstrap script down until the error.
+- If you have a unique issue, please create a new Issue, and include the output of your terminal from the script down until the error.
 
 ## Backlog
 

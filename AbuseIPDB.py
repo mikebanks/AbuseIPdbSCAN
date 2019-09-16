@@ -56,6 +56,7 @@ def get_file(infile):
 
 def get_cat(x):
     return {
+        0: 'BLANK',
         3: 'Frad_Orders',
         4: 'DDoS_Attack',
         5: 'FTP_Brute-Force',

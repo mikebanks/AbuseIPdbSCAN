@@ -1,53 +1,50 @@
-# AbuseIP DB Scanner
+# AbuseIPDB Scanner
 
 This is a python script that will parse IP addresses from files and interact with AbuseIPDB API. It will return the information about the IP into standard out in tab separated values in standard out.
 
-## Requirements (Setup)
+## Installation
 
-- Python3 (2.7 may have errors)
-- Requests
+```
+git clone https://github.com/mikebanks/AbuseIPdbSCAN.git
+```
+
+## Requirements
 
 ``` BASH
 pip3 install -r requirements.txt
 ```
 
-- AbuseIP DB API Key
+## AbuseIPDB API Key
 
-In order to use the script you will need an API key and place it in the scrip under the "api_key" variable. API key information can be found here: (https://www.abuseipdb.com/api.html)
+In order to use the script you will need an API key and place it in the script under the "api_key" variable. 
+The AbuseIPDB API key information can be found here: (https://www.abuseipdb.com/api.html)
 
 ## Usage
 
-``` BASH
-python3 AbuseIPDB.py -f file_to_parse.txt
-```
+Short Form    | Long Form     | Description
+------------- | ------------- |-------------
+-b            | --block       | lookup an IP block
+-c            | --csv         | outputs items in comma seperated values
+-d            | --days        | take in the number of days in history to go back for IP reports. Default: 30 Days
+-f            | --file        | parses IP Addresses from a single given file
+-i            | --ip          | lookup a single IP address
+-j            | --json        | outputs items in json format
+-l            | --jsonl       | outputs items in jsonl format
+-t            | --tsv         | outputs items in tab seperated values (Default)
+-x            | --translate   | by default categories are numbers, with this flag it will convert them to text
+-v            | --version     | displays version information
+-cc           | --countrycode | select a country code to check IP range
 
- The options are as follows:
+### Examples
 
-``` BASH
-  -f FILE, --file FILE  	parses IP Addresses from a single given file
-  -i IP, --ip IP        	Takes a single IP Addresse
-  -c CSV, --csv CSV     	outputs items in comma seperated values
-  -j JSON, --json JSON  	outputs items in jsonl format
-  -l JSONL, --jsonl JSONL	outputs items in jsonl format
-  -t TSV, --tsv TSV     	outputs items in tab seperated values (Default)
-  -d DAYS, --days DAYS  	take in the number of days in history to go back for IP reports. Default: 30 Days
-  -x, --translate       By default categories are numbers, with this flag it will convert them to text
-  -v, --version			Displays version information
-```
+* To search for reports on an IP address:
 
-## Troubleshooting
+``python3 AbuseIPDB.py -i 1.1.1.1``
 
-- If you are receiving errors, please look at the Issues queue and see if there is already an issue open.
+* To search for reports on an IP Block:
 
-- If you have a unique issue, please create a new Issue, and include the output of your terminal from the script down until the error.
+``python3 AbuseIPDB.py -b 1.1.1.0/24``
 
-## Backlog
+* To search a whole country IP range and translate the categories to names:
 
-- Parse for IPs recursively through directories
-
-## Completed (After Launch)
-
-- ~~Create an option to output data in TSV~~
-- ~~Create an option to output data in CSV~~
-- ~~Create an option to output data in JSON~~
-- ~~Create an option to output data to a file~~
+``python3 AbuseIPDB.py -cc nz -x``

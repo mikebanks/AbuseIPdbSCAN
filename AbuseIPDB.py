@@ -168,7 +168,11 @@ def check_file(file,days):
                 for ip_range_24 in subnets:
                     check_block(ip_range_24, days)
             else:
-                check_ip(file_item, days)
+                found = re.findall(
+                    r'(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})', file_item)
+                list(found)
+                for ip in found:
+                    check_ip(ip, days)
 
 def make_subnet_24(block):
     # Need to make range /24 as AbuseIPDB doesn't support anything larger
@@ -209,49 +213,52 @@ def search_cc(days):
 
 
 def get_report(logs):
-    # Convert category numbers to words
-    if args.translate:
-        for log in logs:
-            tmp_catergory = []
-            category = log['categories']
-            for cat in category:
-                tmp_catergory.append(get_cat(cat))
-            log['categories'] = tmp_catergory
+    if logs:
+        # Convert category numbers to words
+        if args.translate:
+            for log in logs:
+                tmp_catergory = []
+                category = log['categories']
+                for cat in category:
+                    tmp_catergory.append(get_cat(cat))
+                log['categories'] = tmp_catergory
 
-    # Output options
-    if args.csv:
-        keys = logs[0].keys()
-        if not os.path.isfile(args.csv):
-            with open(args.csv, 'a') as outfile:
-                dict_writer = csv.DictWriter(outfile, keys,quoting=csv.QUOTE_ALL)
+        # Output options
+        if args.csv:
+            keys = logs[0].keys()
+            if not os.path.isfile(args.csv):
+                with open(args.csv, 'a') as outfile:
+                    dict_writer = csv.DictWriter(outfile, keys,quoting=csv.QUOTE_ALL)
+                    dict_writer.writeheader()
+                    dict_writer.writerows(logs)
+            else:
+                with open(args.csv, 'a') as outfile:
+                    dict_writer = csv.DictWriter(outfile, keys,quoting=csv.QUOTE_ALL)
+                    dict_writer.writerows(logs)
+            pass
+        elif args.tsv:
+            keys = logs[0].keys()
+            with open(args.tsv, 'w') as outfile:
+                dict_writer = csv.DictWriter(outfile, keys, delimiter='\t')
                 dict_writer.writeheader()
                 dict_writer.writerows(logs)
+            pass
+        elif args.jsonl:
+            json_logs = json.dumps(logs)
+            with open(args.jsonl, 'w') as outfile:
+                for log in logs:
+                    json.dump(log, outfile)
+                    outfile.write('\n')
+            pass
+        elif args.json:
+            with open(args.json, 'w') as outfile:
+                json.dump(logs, outfile)
+            pass
         else:
-            with open(args.csv, 'a') as outfile:
-                dict_writer = csv.DictWriter(outfile, keys,quoting=csv.QUOTE_ALL)
-                dict_writer.writerows(logs)
-        pass
-    elif args.tsv:
-        keys = logs[0].keys()
-        with open(args.tsv, 'w') as outfile:
-            dict_writer = csv.DictWriter(outfile, keys, delimiter='\t')
-            dict_writer.writeheader()
-            dict_writer.writerows(logs)
-        pass
-    elif args.jsonl:
-        json_logs = json.dumps(logs)
-        with open(args.jsonl, 'w') as outfile:
             for log in logs:
-                json.dump(log, outfile)
-                outfile.write('\n')
-        pass
-    elif args.json:
-        with open(args.json, 'w') as outfile:
-            json.dump(logs, outfile)
-        pass
+                print(log)
+            pass
     else:
-        for log in logs:
-            print(log)
         pass
 
 

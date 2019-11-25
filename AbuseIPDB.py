@@ -109,21 +109,21 @@ def check_block(ip_block, days):
                 'https://api.abuseipdb.com/api/v2/check-block', headers=headers, params=params)
             if r.status_code == 503:
                 print(
-                    F"Error: abuseIPDB returned a 503 for {ip_block}")
+                    f"Error: abuseIPDB returned a 503 for {ip_block}")
             else:
                 break
 
         response = r.json()
         if 'errors' in response:
-            print(F"Error: {response['errors'][0]['detail']}")
+            print(f"Error: {response['errors'][0]['detail']}")
             exit(1)
         else:
-            print(F"Report IP's in {ip_block} Block: {len(response['data']['reportedAddress'])}")
+            print(f"Report IP's in {ip_block} Block: {len(response['data']['reportedAddress'])}")
             for reports in response['data']['reportedAddress']:
                 if args.countrycode is None or args.countrycode.lower() in reports['countryCode'].lower():
                     check_ip(reports['ipAddress'], days)
     else:
-        print(F"{ip_block} is a private block")
+        print(f"{ip_block} is a private block")
 
 
 def check_ip(IP, days):
@@ -144,7 +144,7 @@ def check_ip(IP, days):
                          headers=headers, params=params)
         response = r.json()
         if 'errors' in response:
-            print(F"Error: {response['errors'][0]['detail']}")
+            print(f"Error: {response['errors'][0]['detail']}")
             exit(1)
         else:
             for reports in response['data']['reports']:
@@ -187,7 +187,7 @@ def make_subnet_24(block):
 
 def search_cc(days):
     try:
-        url = F"https://www.nirsoft.net/countryip/{args.countrycode}.csv"
+        url = f"https://www.nirsoft.net/countryip/{args.countrycode}.csv"
         req = urlRequest.Request(url)
         x = urlRequest.urlopen(req)
         ip_blocks = x.read().decode('utf-8')
@@ -206,11 +206,11 @@ def search_cc(days):
                         pass
     except urllib.URLError as e:
         if '404' in str(e):
-            print(F"{url} not a valid url")
+            print(f"{url} not a valid url")
             print(
                 "List of countries codes can be found at https://www.nirsoft.net/countryip/")
         else:
-            print(F"Error: {e.reason}")
+            print(f"Error: {e.reason}")
 
         exit()
 

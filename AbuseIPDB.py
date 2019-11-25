@@ -257,7 +257,7 @@ def get_report(logs):
             pass
         elif args.json:
             with open(args.json, 'w') as outfile:
-                json.dump(logs, outfile)
+                json.dump(logs, outfile, indent=4, sort_keys=True)
             pass
         else:
             for log in logs:

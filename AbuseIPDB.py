@@ -156,8 +156,7 @@ def check_ip(IP, days):
                 reports['isWhitelisted'] = response['data']['isWhitelisted']
                 reports['abuseConfidenceScore'] = response['data']['abuseConfidenceScore']
                 reports['totalReports'] = response['data']['totalReports']
-                reports['comment'] = reports['comment'].replace('\r', '\\r')
-                reports['comment'] = reports['comment'].replace('\n', '\\n')
+                reports['comment'] = repr(reports['comment'])
                 logs.append(reports)
             get_report(logs)
     else:

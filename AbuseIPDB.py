@@ -19,6 +19,7 @@ api_key = 'YOUR_API_KEY_HERE'
 parser = argparse.ArgumentParser(
     description='This program utilizes the Abuse IP Database from: AbuseIPDB.com to perform queries about IP addresses and returns the output to standard out.'
 )
+# Inputs
 required = parser.add_mutually_exclusive_group()
 required.add_argument(
     "-f",
@@ -41,15 +42,15 @@ required.add_argument(
     help="Select a country code to check IP range",
     action="store")
 
-
 # Outputs
-parser.add_argument(
+outputs = parser.add_mutually_exclusive_group()
+outputs.add_argument(
     "-c", "--csv", help="outputs items in comma seperated values",  action="store")
-parser.add_argument(
+outputs.add_argument(
     "-j", "--json", help="outputs items in json format",  action="store")
-parser.add_argument(
+outputs.add_argument(
     "-l", "--jsonl", help="outputs items in jsonl format",  action="store")
-parser.add_argument(
+outputs.add_argument(
     "-t", "--tsv", help="outputs items in tab seperated values (Default)", action="store")
 
 # Additional Options
@@ -58,7 +59,7 @@ parser.add_argument(
 parser.add_argument("-x", "--translate",
                     help="By default categories are numbers, with this flag it will convert them to text",  action="store_true")
 parser.add_argument(
-    "-v", "--version', action='version', version='%(prog)s 2.0")
+    "-v", "--version", help="show program version", action="store_true")
 
 args = parser.parse_args()
 
@@ -93,7 +94,7 @@ def get_cat(x):
 
 
 def check_block(ip_block, days):
-    if ipaddress.ip_network(ip_block).is_private is False:
+    if ipaddress.ip_network(ip_block, False).is_private is False:
         headers = {
             'Key': api_key,
             'Accept': 'application/json',
@@ -101,7 +102,7 @@ def check_block(ip_block, days):
 
         params = {
             'maxAgeInDays': days,
-            'network': F'{ip_block}'
+            'network': f'{ip_block}'
         }
 
         while True:
@@ -118,16 +119,15 @@ def check_block(ip_block, days):
             print(f"Error: {response['errors'][0]['detail']}")
             exit(1)
         else:
-            print(f"Report IP's in {ip_block} Block: {len(response['data']['reportedAddress'])}")
-            for reports in response['data']['reportedAddress']:
-                if args.countrycode is None or args.countrycode.lower() in reports['countryCode'].lower():
-                    check_ip(reports['ipAddress'], days)
+            logs = []
+            logs.append(response['data'])
+            return logs
+
     else:
         print(f"{ip_block} is a private block")
 
 
 def check_ip(IP, days):
-    logs = []
     if ipaddress.ip_address(IP).is_private is False:
         headers = {
             'Key': api_key,
@@ -147,44 +147,44 @@ def check_ip(IP, days):
             print(f"Error: {response['errors'][0]['detail']}")
             exit(1)
         else:
-            for reports in response['data']['reports']:
-                reports['ipAddress'] = response['data']['ipAddress']
-                reports['isp'] = response['data']['isp']
-                reports['domain'] = response['data']['domain']
-                reports['usageType'] = response['data']['usageType']
-                reports['countryName'] = response['data']['countryName']
-                reports['isWhitelisted'] = response['data']['isWhitelisted']
-                reports['abuseConfidenceScore'] = response['data']['abuseConfidenceScore']
-                reports['totalReports'] = response['data']['totalReports']
-                reports['comment'] = repr(reports['comment'])
-                logs.append(reports)
-            get_report(logs)
+            if args.translate:
+                if response['data']['totalReports'] > 0:                    
+                    for report in response['data']['reports']:
+                        tmp_catergory = []
+                        category = report['categories']
+                        for cat in category:
+                            tmp_catergory.append(get_cat(cat))
+                        report['categories'] = tmp_catergory
+            return response['data']
     else:
         exit("A Private IP will return no result...")
 
 
 def check_file(file, days):
+    logs = []
     found = []
     with open(file) as f:
         file_item = f.read()
-        regex = r"\b(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))\b"
+        regex = r'(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))'
+        
         matches = re.finditer(regex, file_item, re.MULTILINE)
 
         [found.append(match.group())
          for matchNum, match in enumerate(matches, start=1)]
         found = set(found)
-
         for match in found:
-            check_ip(match, days)
+            logs.append(check_ip(match, days))
+    return logs
 
 
-def make_subnet_24(block):
-    # Need to make range /24 as AbuseIPDB doesn't support anything larger
+def make_subnet(block):
+    # Setting to /24 as AbuseIPDB doesn't support anything larger
     ip = netaddr.IPNetwork(block)
     return list(ip.subnet(24))
 
 
 def search_cc(days):
+    logs = []
     try:
         url = f"https://www.nirsoft.net/countryip/{args.countrycode}.csv"
         req = urlRequest.Request(url)
@@ -196,13 +196,11 @@ def search_cc(days):
                 startip = row[0]
                 endip = row[1]
                 block = netaddr.iprange_to_cidrs(startip, endip)[0]
-                subnets = make_subnet_24(block)
+                subnets = make_subnet(block)
                 for ip_range_24 in subnets:
-                    if str(ip_range_24) not in open('checked.txt').read():
-                        check_block(ip_range_24, days)
-                        print(ip_range_24,  file=open('checked.txt', 'a'))
-                    else:              
-                        pass
+                    logs.append(check_block(ip_range_24, days))
+            return logs
+                        
     except urllib.URLError as e:
         if '404' in str(e):
             print(f"{url} not a valid url")
@@ -216,29 +214,14 @@ def search_cc(days):
 
 def get_report(logs):
     if logs:
-        # Convert category numbers to words
-        if args.translate:
-            for log in logs:
-                tmp_catergory = []
-                category = log['categories']
-                for cat in category:
-                    tmp_catergory.append(get_cat(cat))
-                log['categories'] = tmp_catergory
-
         # Output options
         if args.csv:
             keys = logs[0].keys()
-            if not os.path.isfile(args.csv):
-                with open(args.csv, 'a') as outfile:
-                    dict_writer = csv.DictWriter(
-                        outfile, keys, quoting=csv.QUOTE_ALL)
-                    dict_writer.writeheader()
-                    dict_writer.writerows(logs)
-            else:
-                with open(args.csv, 'a') as outfile:
-                    dict_writer = csv.DictWriter(
-                        outfile, keys, quoting=csv.QUOTE_ALL)
-                    dict_writer.writerows(logs)
+            with open(args.csv, 'w') as outfile:
+                dict_writer = csv.DictWriter(
+                    outfile, keys, quoting=csv.QUOTE_ALL)
+                dict_writer.writeheader()
+                dict_writer.writerows(logs)
             pass
         elif args.tsv:
             keys = logs[0].keys()
@@ -259,8 +242,7 @@ def get_report(logs):
                 json.dump(logs, outfile, indent=4, sort_keys=True)
             pass
         else:
-            for log in logs:
-                print(log)
+            print(logs)
             pass
     else:
         pass
@@ -272,19 +254,21 @@ def main():
     else:
         days = 30
 
-    if not os.path.isfile('checked.txt'):
-        print(file=open('checked.txt', 'w'))
-
     if args.file:
-        check_file(args.file, days)
+        get_report(check_file(args.file, days))
     elif args.ip:
-        check_ip(args.ip, days)
+        get_report(check_ip(args.ip, days))
     elif args.block:
-        subnets = make_subnet_24(args.block)
-        for ip_range_24 in subnets:
-            check_block(ip_range_24, days)
+        regex = '^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([2][4-9]|3[0-2]))?$'
+        valid_block = re.findall(regex,args.block)
+        if valid_block:
+            get_report(check_block(args.block, days))
+        else:
+            exit("Not valid CIDR or Not within the accepted Block. Note: AbuseIPDB only accepts /24+")
     elif args.countrycode:
-        search_cc(days)
+        get_report(search_cc(days))
+    elif args.version:
+        print(f"{parser.prog} Version: 2.1")
     else:
         exit(
             "Error: one of the following arguments are required: -f/--file, -i/--ip, -b/--block or -cc/--countrycode")

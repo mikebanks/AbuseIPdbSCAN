@@ -1,20 +1,34 @@
 #!/usr/bin/python3
-import argparse
-import codecs
-import csv
-import ipaddress
-import json
-import netaddr
-import os.path
+import os
 import re
-import requests
-import socket
+import csv
 import time
+import json
+import codecs
+import socket
+import os.path
+import netaddr
+import argparse
+import requests
+import ipaddress
 import urllib.request as urllib
 import urllib.request as urlRequest
 import urllib.parse as urlParse
 
-api_key = 'YOUR_API_KEY_HERE'
+from dotenv import load_dotenv
+
+
+# Setup API Key
+while os.getenv('API_KEY') is None:
+    load_dotenv()
+    if os.getenv('API_KEY'):
+        api_key = os.getenv('API_KEY')
+    else:
+        with open('.env', 'w') as outfile:
+            setKey = input(
+                'Config File Not Found....\nCreating...\nEnter you API Key for AbuseIPDB: ')
+            outfile.write(f'API_KEY={setKey}')
+
 
 parser = argparse.ArgumentParser(
     description='This program utilizes the Abuse IP Database from: AbuseIPDB.com to perform queries about IP addresses and returns the output to standard out.'
@@ -148,7 +162,7 @@ def check_ip(IP, days):
             exit(1)
         else:
             if args.translate:
-                if response['data']['totalReports'] > 0:                    
+                if response['data']['totalReports'] > 0:
                     for report in response['data']['reports']:
                         tmp_catergory = []
                         category = report['categories']
@@ -166,7 +180,7 @@ def check_file(file, days):
     with open(file) as f:
         file_item = f.read()
         regex = r'(?:(?:2(?:[0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9])\.){3}(?:(?:2([0-4][0-9]|5[0-5])|[0-1]?[0-9]?[0-9]))'
-        
+
         matches = re.finditer(regex, file_item, re.MULTILINE)
 
         [found.append(match.group())
@@ -200,7 +214,7 @@ def search_cc(days):
                 for ip_range_24 in subnets:
                     logs.append(check_block(ip_range_24, days))
             return logs
-                        
+
     except urllib.URLError as e:
         if '404' in str(e):
             print(f"{url} not a valid url")
@@ -260,11 +274,12 @@ def main():
         get_report(check_ip(args.ip, days))
     elif args.block:
         regex = '^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([2][4-9]|3[0-2]))?$'
-        valid_block = re.findall(regex,args.block)
+        valid_block = re.findall(regex, args.block)
         if valid_block:
             get_report(check_block(args.block, days))
         else:
-            exit("Not valid CIDR or Not within the accepted Block. Note: AbuseIPDB only accepts /24+")
+            exit(
+                "Not valid CIDR or Not within the accepted Block. Note: AbuseIPDB only accepts /24+")
     elif args.countrycode:
         get_report(search_cc(days))
     elif args.version:

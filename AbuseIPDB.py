@@ -234,8 +234,7 @@ def get_report(logs):
                 keys = logs[0].keys()
             except KeyError:
                 keys = logs.keys()
-            print(logs)
-
+            
             with open(args.csv, 'w') as outfile:
                 dict_writer = csv.DictWriter(
                     outfile, keys, quoting=csv.QUOTE_ALL)

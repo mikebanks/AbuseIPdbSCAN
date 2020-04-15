@@ -61,9 +61,9 @@ outputs = parser.add_mutually_exclusive_group()
 outputs.add_argument(
     "-c", "--csv", help="outputs items in comma seperated values",  action="store")
 outputs.add_argument(
-    "-j", "--json", help="outputs items in json format",  action="store")
+    "-j", "--json", help="outputs items in json format (reccomended)",  action="store")
 outputs.add_argument(
-    "-l", "--jsonl", help="outputs items in jsonl format",  action="store")
+    "-l", "--jsonl", help="outputs items in jsonl format (reccomended",  action="store")
 outputs.add_argument(
     "-t", "--tsv", help="outputs items in tab seperated values (Default)", action="store")
 
@@ -138,7 +138,7 @@ def check_block(ip_block, days):
             return logs
 
     else:
-        print(f"{ip_block} is a private block")
+        return (f"{ip_block} is a private block")
 
 
 def check_ip(IP, days):
@@ -171,7 +171,7 @@ def check_ip(IP, days):
                         report['categories'] = tmp_catergory
             return response['data']
     else:
-        exit("A Private IP will return no result...")
+        return (f"{IP} is private. No Resuls")
 
 
 def check_file(file, days):
@@ -230,7 +230,12 @@ def get_report(logs):
     if logs:
         # Output options
         if args.csv:
-            keys = logs[0].keys()
+            try:
+                keys = logs[0].keys()
+            except KeyError:
+                keys = logs.keys()
+            print(logs)
+
             with open(args.csv, 'w') as outfile:
                 dict_writer = csv.DictWriter(
                     outfile, keys, quoting=csv.QUOTE_ALL)

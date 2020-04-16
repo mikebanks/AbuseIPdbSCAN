@@ -1,6 +1,7 @@
-certifi==2019.9.11
-chardet==3.0.4
-idna==2.8
-requests==2.22.0
-urllib3==1.25.3
-netaddr==0.7.19
+certifi
+chardet
+idna
+requests
+urllib3
+netaddr
+python-dotenv

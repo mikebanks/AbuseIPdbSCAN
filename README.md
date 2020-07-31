@@ -16,7 +16,7 @@ pip3 install -r requirements.txt
 
 ## AbuseIPDB API Key
 
-In order to use the script you will need an API key. The AbuseIPDB API key information can be found here: (<https://www.abuseipdb.com/api.html)>
+In order to use the script you will need an API key. The AbuseIPDB API key information can be found here: <https://www.abuseipdb.com/api.html> (deprecated, V2: <https://docs.abuseipdb.com/>)
 
 ## Usage
 

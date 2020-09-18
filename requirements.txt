@@ -1,7 +1,7 @@
 certifi
 chardet
 idna
-requests
-urllib3
 netaddr
 python-dotenv
+requests
+urllib3

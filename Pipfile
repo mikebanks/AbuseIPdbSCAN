@@ -9,10 +9,13 @@ verify_ssl = true
 certifi = "*"
 chardet = "*"
 idna = "*"
-requests = "*"
-urllib3 = "*"
+# Patched versions compatible with Python 3.13
+requests = "==2.32.5"
+urllib3 = "==2.5.0"
 netaddr = "*"
-python-dotenv = "*"
+# Latest compatible for 3.13+
+python-dotenv = "==1.1.1"
 
 [requires]
-python_version = "3.8"
+python_version = "3.13"
+python_full_version = "3.13.7"

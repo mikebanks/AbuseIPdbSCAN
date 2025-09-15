@@ -9,10 +9,12 @@ verify_ssl = true
 certifi = "*"
 chardet = "*"
 idna = "*"
-requests = "*"
-urllib3 = "*"
+# Pin to patched requests for .netrc leak fix (CVE-2024-*)
+requests = ">=2.32.3"
+# Pin to patched urllib3 for redirect handling fixes
+urllib3 = ">=2.2.3"
 netaddr = "*"
 python-dotenv = "*"
 
 [requires]
-python_version = "3.8"
+python_version = "3.9"

@@ -1,2 +1,64 @@
+.DS_Store
+Thumbs.db
+
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Packaging and build artifacts
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+pip-wheel-metadata/
+.python-version
+
+# Test, coverage, and type checker caches
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Editors and IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+logs/
+
+# Environment files (keep secrets out of git)
 .env
-.idea
+.env.*
+!.env.example
+
+# Generated reports (keep shipped examples tracked)
+reports/*
+!reports/example_list.json
+!reports/example_list.jsonl
+!reports/example_list.csv
+!reports/example_list.tsv
+

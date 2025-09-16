@@ -2,6 +2,8 @@
 
 Query AbuseIPDB for IPs, CIDR blocks, files of IPs, or full country allocations, and export results as CSV, TSV, JSON, or JSONL. Designed for quick lookups, bulk workflows, and downstream automation/AI ingestion.
 
+Current version: 2.2
+
 ## Features
 
 - Single IP and CIDR block lookups (AbuseIPDB v2)
@@ -26,7 +28,7 @@ python3 AbuseIPDB.py -i 1.1.1.1 -j result.json
 
 ## Requirements
 
-- Python 3.10+ (tested with 3.13)
+- Python 3.10+ (enforced at runtime; tested with 3.13)
 - Dependencies in `requirements.txt`
 
 Install with pip:
@@ -55,7 +57,7 @@ The tool reads `API_KEY` from environment variables or a local `.env` file:
 API_KEY=your_key_here
 ```
 
-Tip: On first run, if `API_KEY` isn’t found, the script will prompt you and create `.env` automatically.
+You can interactively create `.env` using: `python3 AbuseIPDB.py --init`.
 
 ## Usage
 
@@ -77,6 +79,9 @@ Options:
 - `-d, --days <int>`: Max age of reports to include (default: 30)
 - `-x, --translate`: Translate numeric categories to names when present
 - `-v, --version`: Show version and exit
+- `--init`: Interactively create `.env` with `API_KEY`
+- `--limit <int>`: Limit number of /24 subnets processed during `--countrycode`
+- `--sleep <float>`: Seconds to sleep between API calls (helpful for rate limits)
 
 Output formats (provide a filename to write results):
 
@@ -85,7 +90,7 @@ Output formats (provide a filename to write results):
 - `-c, --csv <file>`: Comma-separated values
 - `-t, --tsv <file>`: Tab-separated values
 
-Note: If no output flag is provided, results are printed to stdout as Python structures. Prefer `--json`/`--jsonl` for stable, machine-readable output.
+Note: If no output flag is provided, results print to stdout as pretty JSON. Prefer `--json`/`--jsonl` when writing to files.
 
 ## Examples
 
@@ -110,7 +115,7 @@ python3 AbuseIPDB.py -f example_list.txt -x -j out.json
 Scan all /24s in a country (heavy; mind rate limits):
 
 ```bash
-python3 AbuseIPDB.py -cc nz -l nz.jsonl
+python3 AbuseIPDB.py -cc nz --limit 50 --sleep 0.5 -l nz.jsonl
 ```
 
 Sample outputs are in `reports/`:
@@ -119,6 +124,14 @@ Sample outputs are in `reports/`:
 - `reports/example_list.jsonl`
 - `reports/example_list.csv`
 - `reports/example_list.tsv`
+
+You can also run a quickstart script with common invocations:
+
+```bash
+bash examples/quickstart.sh
+```
+
+Outputs are written to `examples/out/`.
 
 ## Output Schema (overview)
 
@@ -155,8 +168,16 @@ Example (truncated):
 
 - Private IPs: Private addresses/blocks are skipped with a message.
 - Large blocks: AbuseIPDB requires /24 or smaller; larger blocks will be rejected.
-- HTTP 503: The tool retries on some transient errors when checking blocks; try again later if issues persist.
+- HTTP 429/5xx: The tool includes basic retries with exponential backoff and timeouts on network calls. If issues persist, try again later.
 - Country scans: This uses NirSoft allocation data. Invalid codes return 404; see https://www.nirsoft.net/countryip/ for available codes. Country scans can be slow and may hit rate limits.
+  - Use `--limit` to cap subnets and `--sleep` to throttle requests.
+
+## Implementation Notes
+
+- Network calls use timeouts and limited retries with exponential backoff.
+- All output writers normalize inputs to lists of objects; single lookups are wrapped automatically.
+- Private IPs/blocks are skipped rather than returned as strings, with messages sent to stderr.
+- Category labels cover AbuseIPDB categories 0–23.
 
 ## Security and Privacy
 

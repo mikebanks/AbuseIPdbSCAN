@@ -311,7 +311,7 @@ def get_report(logs) -> None:
 def main():
     # Version early-exit
     if args.version:
-        print(f"{parser.prog} Version: 2.2")
+        print(f"{parser.prog} Version: 2.2.1")
         sys.exit(0)
 
     # Optional interactive init

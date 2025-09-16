@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "abuseipdbscanner"
-version = "2.2.0"
+version = "2.2.1"
 description = "CLI to query AbuseIPDB for IPs, CIDR blocks, files of IPs, or country allocations, with multiple export formats."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -34,3 +34,5 @@ abuseipdb-scan = "AbuseIPDB:main"
 Homepage = "https://github.com/mikebanks/AbuseIPdbSCAN"
 Issues = "https://github.com/mikebanks/AbuseIPdbSCAN/issues"
 
+[tool.setuptools]
+py-modules = ["AbuseIPDB"]

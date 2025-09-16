@@ -1,5 +1,16 @@
 Changelog
 
+## v2.2.1 — Packaging fix and CI smoke test
+
+Release date: 2025-09-16
+
+Fixes
+- Include the main module in built wheels via `py-modules` so the installed console script works.
+- Bump version strings to 2.2.1.
+
+CI
+- Release workflow now performs a smoke test by installing the built wheel and running `abuseipdb-scan -v` before uploading artifacts.
+
 ## v2.2 — Hardened CLI, normalized outputs, country scan controls
 
 Release date: 2025-09-16
@@ -32,4 +43,3 @@ Upgrade Notes
 - Ensure your environment uses Python 3.10+.
 - Set `API_KEY` via environment or `.env` (use `--init` to create one interactively).
 - For large country scans, consider `--limit` and `--sleep` to manage rate limits.
-

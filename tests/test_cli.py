@@ -38,8 +38,8 @@ def test_private_ip_skipped(monkeypatch):
     r = run(["-i", "127.0.0.1"], env=env)
     # No network call needed; should skip and print "No results."
     assert r.returncode == 0
-    assert "No results." in r.stdout
     assert "Skipping private IP" in r.stderr
+    assert "No results." in r.stderr
 
 
 def test_private_block_skipped(monkeypatch):
@@ -47,8 +47,8 @@ def test_private_block_skipped(monkeypatch):
     env["API_KEY"] = "dummy"
     r = run(["-b", "10.0.0.0/24"], env=env)
     assert r.returncode == 0
-    assert "No results." in r.stdout
     assert "Skipping private block" in r.stderr
+    assert "No results." in r.stderr
 
 
 def test_invalid_block_exits_nonzero():
@@ -57,4 +57,3 @@ def test_invalid_block_exits_nonzero():
     r = run(["-b", "1.1.1.0/23"], env=env)
     assert r.returncode != 0
     assert "AbuseIPDB only accepts /24 to /32" in r.stderr
-

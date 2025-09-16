@@ -6,7 +6,8 @@
 
 Query AbuseIPDB for IPs, CIDR blocks, files of IPs, or full country allocations, and export results as CSV, TSV, JSON, or JSONL. Designed for quick lookups, bulk workflows, and downstream automation/AI ingestion.
 
-Current version: 2.2
+Current version: 2.2.1
+Release notes: https://github.com/mikebanks/AbuseIPdbSCAN/releases/tag/v2.2.1
 
 ## Features
 
@@ -58,7 +59,7 @@ python3 -m pip install .
 
 # Or directly from GitHub (latest tagged)
 python3 -m pip install \
-  "git+https://github.com/mikebanks/AbuseIPdbSCAN.git@v2.2"
+  "git+https://github.com/mikebanks/AbuseIPdbSCAN.git@v2.2.1"
 ```
 
 This installs a console script `abuseipdb-scan` on your PATH:

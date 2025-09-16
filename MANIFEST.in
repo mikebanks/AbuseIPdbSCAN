@@ -1,0 +1,8 @@
+include README.md
+include CHANGELOG.md
+include requirements.txt
+include .env.example
+recursive-include examples *.sh *.md
+recursive-include reports *.json *.jsonl *.csv *.tsv
+recursive-include tests *.py *.md
+global-exclude __pycache__ *.py[cod]

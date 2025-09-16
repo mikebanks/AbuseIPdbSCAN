@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "abuseipdbscanner"
+version = "2.2.0"
+description = "CLI to query AbuseIPDB for IPs, CIDR blocks, files of IPs, or country allocations, with multiple export formats."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Michael Banks" }]
+keywords = ["abuseipdb", "security", "threat-intel", "cli"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Environment :: Console",
+  "Intended Audience :: Information Technology",
+  "Topic :: Security",
+]
+dependencies = [
+  "requests>=2.31",
+  "netaddr>=1.2",
+  "python-dotenv>=1.0",
+]
+
+[project.scripts]
+abuseipdb-scan = "AbuseIPDB:main"
+
+[project.urls]
+Homepage = "https://github.com/mikebanks/AbuseIPdbSCAN"
+Issues = "https://github.com/mikebanks/AbuseIPdbSCAN/issues"
+

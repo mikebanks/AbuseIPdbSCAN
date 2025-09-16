@@ -1,5 +1,9 @@
 # AbuseIPDB Scanner
 
+[![CI](https://github.com/mikebanks/AbuseIPdbSCAN/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/mikebanks/AbuseIPdbSCAN/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/mikebanks/AbuseIPdbSCAN?display_name=tag)](https://github.com/mikebanks/AbuseIPdbSCAN/releases)
+[![PyPI](https://img.shields.io/badge/PyPI-planned-lightgrey)](#installation)
+
 Query AbuseIPDB for IPs, CIDR blocks, files of IPs, or full country allocations, and export results as CSV, TSV, JSON, or JSONL. Designed for quick lookups, bulk workflows, and downstream automation/AI ingestion.
 
 Current version: 2.2
@@ -42,6 +46,26 @@ Or with Pipenv:
 ```bash
 pipenv install
 pipenv run python AbuseIPDB.py -v
+```
+
+## Installation
+
+Install the CLI as a package (pure Python, no compiled extensions):
+
+```bash
+# From a clone
+python3 -m pip install .
+
+# Or directly from GitHub (latest tagged)
+python3 -m pip install \
+  "git+https://github.com/mikebanks/AbuseIPdbSCAN.git@v2.2"
+```
+
+This installs a console script `abuseipdb-scan` on your PATH:
+
+```bash
+abuseipdb-scan -v
+abuseipdb-scan -i 8.8.8.8 -j out.json
 ```
 
 ## Configuration

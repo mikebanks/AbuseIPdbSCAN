@@ -216,9 +216,13 @@ def check_file(file_path: str, days: int, api_key: str) -> List[Dict[str, Any]]:
 
 
 def make_subnet(block: netaddr.IPNetwork) -> List[netaddr.IPNetwork]:
-    # Setting to /24 as AbuseIPDB doesn't support anything larger
+    """Expand ranges to AbuseIPDB-supported CIDRs (/24–/32)."""
     ip = netaddr.IPNetwork(block)
-    return list(ip.subnet(24))
+    if ip.prefixlen < 24:
+        return list(ip.subnet(24))
+    if 24 <= ip.prefixlen <= 32:
+        return [ip]
+    return []
 
 
 def search_cc(days: int, api_key: str) -> List[Dict[str, Any]]:
@@ -240,20 +244,21 @@ def search_cc(days: int, api_key: str) -> List[Dict[str, Any]]:
                 continue
             startip, endip = row[0], row[1]
             try:
-                block = netaddr.iprange_to_cidrs(startip, endip)[0]
+                blocks = netaddr.iprange_to_cidrs(startip, endip)
             except Exception as e:
                 print_err(f"Skipping invalid range {startip}-{endip}: {e}")
                 continue
-            subnets = make_subnet(block)
-            for ip_range_24 in subnets:
-                data = check_block(str(ip_range_24), days, api_key)
-                if data:
-                    logs.append(data)
-                processed += 1
-                if delay:
-                    time.sleep(delay)
-                if max_items is not None and processed >= max_items:
-                    return logs
+            for block in blocks:
+                subnets = make_subnet(block)
+                for ip_range_24 in subnets:
+                    data = check_block(str(ip_range_24), days, api_key)
+                    if data:
+                        logs.append(data)
+                    processed += 1
+                    if delay:
+                        time.sleep(delay)
+                    if max_items is not None and processed >= max_items:
+                        return logs
         return logs
     except requests.RequestException as e:
         print_err(f"Error fetching {url}: {e}")
@@ -339,7 +344,7 @@ def main():
     elif args.ip:
         get_report(check_ip(args.ip, days, api_key))
     elif args.block:
-        regex = r'^([0-9]{1,3}\.){3}[0-9]{1,3}\/(?:2[4-9]|3[0-2])$'
+        regex = r'^((25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(25[0-5]|2[0-4]\d|1?\d?\d)\/(?:2[4-9]|3[0-2])$'
         valid_block = re.match(regex, args.block) is not None
         if valid_block:
             # Wrap single block result in list for reporting

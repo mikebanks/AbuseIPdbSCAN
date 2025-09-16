@@ -57,3 +57,11 @@ def test_invalid_block_exits_nonzero():
     r = run(["-b", "1.1.1.0/23"], env=env)
     assert r.returncode != 0
     assert "AbuseIPDB only accepts /24 to /32" in r.stderr
+
+
+def test_block_with_invalid_octet():
+    env = os.environ.copy()
+    env["API_KEY"] = "dummy"
+    r = run(["-b", "999.1.1.0/24"], env=env)
+    assert r.returncode != 0
+    assert "Not a valid CIDR" in r.stderr

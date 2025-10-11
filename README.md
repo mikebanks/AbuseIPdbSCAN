@@ -197,6 +197,10 @@ Example (truncated):
 - Country scans: This uses NirSoft allocation data. Invalid codes return 404; see https://www.nirsoft.net/countryip/ for available codes. Country scans can be slow and may hit rate limits.
   - Use `--limit` to cap subnets and `--sleep` to throttle requests.
 
+## Contributing
+
+Read `AGENTS.md` for repository-specific setup steps, coding standards, and pull request expectations.
+
 ## Implementation Notes
 
 - Network calls use timeouts and limited retries with exponential backoff.

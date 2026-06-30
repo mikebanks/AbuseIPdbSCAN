@@ -14,7 +14,7 @@ requests = "==2.33.0"
 urllib3 = "==2.7.0"
 netaddr = "*"
 # Latest compatible for 3.13+
-python-dotenv = "==1.1.1"
+python-dotenv = "==1.2.2"
 
 [requires]
 python_version = "3.13"

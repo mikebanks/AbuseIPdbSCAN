@@ -10,8 +10,8 @@ certifi = "*"
 chardet = "*"
 idna = "*"
 # Patched versions compatible with Python 3.13
-requests = "==2.32.5"
-urllib3 = "==2.6.3"
+requests = "==2.33.0"
+urllib3 = "==2.7.0"
 netaddr = "*"
 # Latest compatible for 3.13+
 python-dotenv = "==1.2.2"
